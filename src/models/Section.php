@@ -152,6 +152,9 @@ class Section extends Model
 		if ($this->total) {
 			$query->limit = $this->total;
 		}
+		if (!isset($this->attribute)) {
+			$this->attribute = 'postDate';
+		}
 		if ($this->attribute != 'userDefined') {
 			$query->orderBy = $this->attribute . ' ' . $this->order;
 		} else if ($this->order == 'desc') {
@@ -339,7 +342,7 @@ class Section extends Model
 		return [
 			'type' => $this->getType(),
 			'value' => $this->value,
-			'attribute' => $this->attribute,
+			'attribute' => $this->attribute ?? 'postDate',
 			'order' => $this->order,
 			'total' => $this->total,
 			'pagination' => $this->pagination,

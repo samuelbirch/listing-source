@@ -16,6 +16,7 @@ use Craft;
 use craft\base\Model;
 use craft\base\ElementInterface;
 use craft\elements\Category as CraftCategory;
+use craft\elements\Entry;
 use craft\helpers\Json;
 use craft\validators\ArrayValidator;
 
@@ -108,9 +109,10 @@ class Category extends Model
 	public function getStickyElements()
 	{
 		if ($this->sticky) {
-			$query = CraftCategory::find();
+			$query = Entry::find();
 			$query->id = $this->sticky;
 			$query->site('*');
+			$query->relatedTo($this->getElement()->id);
 			$query->fixedOrder();
 			return $query;
 		}
@@ -142,9 +144,10 @@ class Category extends Model
 
 	public function getItems($criteria = null, $featured=false)
 	{
-		$query = CraftCategory::find();
-		$query->descendantOf = $this->getElement()->id;
-		$query->descendantDist = 1;
+		$query = Entry::find();
+		$query->relatedTo($this->getElement()->id);
+		//$query->descendantOf = $this->getElement()->id;
+		//$query->descendantDist = 1;
 		
 		$query->limit = null;
 		if ($this->total) {
@@ -163,7 +166,7 @@ class Category extends Model
 			$query->limit = null;
 			$ids = $query->ids();
 
-			$query = CraftCategory::find();
+			$query = Entry::find();
 			if ($this->total) {
 				$query->limit = $this->total;
 			}
